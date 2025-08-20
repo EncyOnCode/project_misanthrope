@@ -110,7 +110,7 @@ final bindingRepo = BindingRepositoryImpl(bindingLocal);
 ---
 
 ## Форматирование `/last`
-- Звёзды: **`⭐ 7.48`** вместо ✩.
+- Звёзды: **`⭐ 7.48`**.
 - Статус:
   - `❤️ Loved`
   - `✅ Qualified`
@@ -128,7 +128,4 @@ final bindingRepo = BindingRepositoryImpl(bindingLocal);
 - Rate limiting и повтор при 429.
 - Тесты на use‑cases и команды (моки репозиториев).
 
----
 
-## Лицензия
-MIT — делайте форки, PR приветствуются.
