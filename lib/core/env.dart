@@ -1,5 +1,4 @@
 class Env {
-
   factory Env.fromPlatform(Map<String, String> env) {
     final bot = env['BOT_TOKEN'];
     final id = env['OSU_CLIENT_ID'];

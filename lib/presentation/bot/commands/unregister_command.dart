@@ -3,8 +3,8 @@ import '../../../domain/usecases/unregister_binding.dart';
 import '../command_base.dart';
 
 class UnregisterCommand extends BotCommand {
-
   UnregisterCommand(this.unreg);
+
   final UnregisterBinding unreg;
 
   @override

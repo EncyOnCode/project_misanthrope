@@ -7,8 +7,8 @@ import '../../../domain/usecases/get_binding.dart';
 import '../command_base.dart';
 
 class ProfileCommand extends BotCommand {
-
   ProfileCommand(this.fetch, this.getBinding);
+
   final FetchProfile fetch;
   final GetBinding getBinding;
 

@@ -14,7 +14,6 @@ abstract class IHttpClient {
 }
 
 class HttpClientImpl implements IHttpClient {
-
   HttpClientImpl(this._c);
   final http.Client _c;
 

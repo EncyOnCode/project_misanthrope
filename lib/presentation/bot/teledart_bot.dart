@@ -4,8 +4,8 @@ import '../../core/parsing.dart';
 import 'command_base.dart';
 
 class TeledartBot {
-
   TeledartBot(this.token, this.commands);
+
   final String token;
   final List<BotCommand> commands;
   late final TeleDart _bot;

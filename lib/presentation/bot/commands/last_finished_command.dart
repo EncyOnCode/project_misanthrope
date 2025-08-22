@@ -8,8 +8,8 @@ import '../../../domain/repositories/osu_repository.dart';
 import '../command_base.dart';
 
 class LastFinishedCommand extends BotCommand {
-
   LastFinishedCommand(this.getRecent, this.getBinding, this.osu);
+
   final FetchRecentScores getRecent;
   final GetBinding getBinding;
   final IOsuRepository osu;

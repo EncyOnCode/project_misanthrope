@@ -3,8 +3,8 @@ import '../../../domain/usecases/get_binding.dart';
 import '../command_base.dart';
 
 class WhoAmICommand extends BotCommand {
-
   WhoAmICommand(this.getBinding);
+
   final GetBinding getBinding;
 
   @override

@@ -8,8 +8,8 @@ import '../../../domain/repositories/osu_repository.dart';
 import '../command_base.dart';
 
 class Top5Command extends BotCommand {
-
   Top5Command(this.getTop, this.getBinding, this.osu);
+
   final FetchTopScores getTop;
   final GetBinding getBinding;
   final IOsuRepository osu;

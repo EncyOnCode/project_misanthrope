@@ -59,10 +59,7 @@ Future<AppDeps> buildDeps(Env env, AppDatabase db) async {
     clientSecret: env.osuClientSecret,
   );
 
-  final remote = OsuRemoteDs(
-    http: httpClient,
-    tokenProvider: auth.getToken,
-  );
+  final remote = OsuRemoteDs(http: httpClient, tokenProvider: auth.getToken);
 
   final osuRepo = OsuRepositoryImpl(remote);
 

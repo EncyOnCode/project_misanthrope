@@ -2,7 +2,6 @@ import '../../domain/entities/binding.dart';
 import '../db/db.dart';
 
 class BindingLocalDs {
-
   BindingLocalDs(this.db);
   final AppDatabase db;
 

@@ -3,8 +3,8 @@ import '../../../domain/usecases/register_binding.dart';
 import '../command_base.dart';
 
 class RegisterCommand extends BotCommand {
-
   RegisterCommand(this.register);
+
   final RegisterBinding register;
 
   @override
