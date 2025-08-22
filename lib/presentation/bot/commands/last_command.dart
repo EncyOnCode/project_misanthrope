@@ -18,7 +18,7 @@ class LastCommand extends BotCommand {
   List<String> get names => ['last', 'l'];
 
   @override
-  List<String> get cyrAliases => ['л'];
+  List<String> get cyrAliases => ['л', 'д', 'дфые', 'ласт'];
 
   @override
   Future<void> handle(TeleDartMessage m) async {
@@ -41,7 +41,7 @@ class LastCommand extends BotCommand {
         uid = await osu.resolveUserId(parsed.user, mode);
       }
 
-      final scores = await getRecent(uid, mode, limit: 1, includeFails: false);
+      final scores = await getRecent(uid, mode, limit: 1, includeFails: true);
       if (scores.isEmpty) {
         await m.reply('Нет недавних успешных скоров.');
         return;
