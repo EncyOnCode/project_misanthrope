@@ -7,18 +7,18 @@ import '../../../domain/usecases/get_binding.dart';
 import '../../../domain/repositories/osu_repository.dart';
 import '../command_base.dart';
 
-class LastFailsCommand extends BotCommand {
+class LastFinishedCommand extends BotCommand {
 
-  LastFailsCommand(this.getRecent, this.getBinding, this.osu);
+  LastFinishedCommand(this.getRecent, this.getBinding, this.osu);
   final FetchRecentScores getRecent;
   final GetBinding getBinding;
   final IOsuRepository osu;
 
   @override
-  List<String> get names => ['last_fails', 'lf'];
+  List<String> get names => ['last_finished', 'lf'];
 
   @override
-  List<String> get cyrAliases => ['лф'];
+  List<String> get cyrAliases => ['лф', 'да', 'дфые_аштшырув'];
 
   @override
   Future<void> handle(TeleDartMessage m) async {

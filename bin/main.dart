@@ -28,7 +28,7 @@ Future<void> main(List<String> args) async {
     ProfileCommand(deps.fetchProfile, deps.getBinding),
     Top5Command(deps.fetchTopScores, deps.getBinding, deps.osuRepo),
     LastCommand(deps.fetchRecentScores, deps.getBinding, deps.osuRepo),
-    LastFailsCommand(deps.fetchRecentScores, deps.getBinding, deps.osuRepo),
+    LastFinishedCommand(deps.fetchRecentScores, deps.getBinding, deps.osuRepo),
   ]);
 
   await bot.start();
