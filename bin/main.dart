@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:enclosedbot/data/db/db.dart';
 import 'package:enclosedbot/presentation/bot/commands/help_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/last_command.dart';
-import 'package:enclosedbot/presentation/bot/commands/last_fails_command.dart';
+import 'package:enclosedbot/presentation/bot/commands/last_finished_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/profile_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/register_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/top5_command.dart';
