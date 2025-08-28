@@ -29,6 +29,7 @@ class OsuScore {
     this.completion,
     this.ppIfFc,
     this.ppIfSs,
+    this.createdAt,
   });
 
   final String artist;
@@ -58,4 +59,5 @@ class OsuScore {
   final double? completion;
   final double? ppIfFc;
   final double? ppIfSs;
+  final DateTime? createdAt;
 }

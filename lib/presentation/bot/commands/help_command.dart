@@ -6,23 +6,25 @@ class HelpCommand extends BotCommand {
   List<String> get names => ['help', 'h', 'start'];
 
   @override
-  List<String> get cyrAliases => ['хелп', 'х'];
+  List<String> get cyrAliases => ['помощь', 'хелп'];
+
   static const _help =
       'Команды и алиасы:\n'
-      '• /help (/h, /хелп, /х) — помощь\n'
-      '• /reg (/r, /рег) <user> — привязать osu к твоему Telegram\n'
-      '• /unreg — удалить привязку\n'
+      '• /help (/h, /помощь, /хелп) — список команд\n'
+      '• /reg (/r) <user> — привязать osu к Telegram\n'
+      '• /unreg — отвязать аккаунт\n'
       '• /whoami — показать привязку\n'
-      '• /profile (/p, /профиль, /п) [user] [mode]\n'
-      '• /top5 (/t5, /т5) [user] [mode]\n'
-      '• /last (/l, /л) [user] [mode]\n'
-      '• /last_fails (/lf, /лф) [user] [mode]\n'
-      '\nЕсли ты привязан через /reg, <user> можно не указывать.\n'
-      'mode: osu|taiko|fruits|mania (по умолчанию osu)\n'
-      'Ник может быть с пробелами: /top5 Some User Name mania';
+      '• /profile (/p) [user] [mode]\n'
+      '• /top5 (/t5) [user] [mode]\n'
+      '• /last (/l) [user] [mode]\n'
+      '• /last_finished (/lf) [user] [mode]\n'
+      '• /compare (/c) [user] [mode] — сравнить результаты на карте; ответьте на сообщение со ссылкой на карту или пришлите ссылку вместе с командой\n'
+      '\nЕсли аккаунт привязан через /reg, <user> можно не указывать.\n'
+      'mode: osu|taiko|fruits|mania (по умолчанию osu)';
 
   @override
   Future<void> handle(TeleDartMessage m) async {
     await m.reply(_help);
   }
 }
+

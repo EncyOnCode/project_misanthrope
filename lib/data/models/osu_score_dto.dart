@@ -51,6 +51,16 @@ class OsuScoreDto {
 
     final int? mapperId = _asInt(user?['id']) ?? _asInt(set['user_id']);
 
+    DateTime? createdAt;
+    final createdAtStr = _asString(json['created_at']);
+    if (createdAtStr != null) {
+      try {
+        createdAt = DateTime.tryParse(createdAtStr)?.toLocal();
+      } on Exception catch (_) {
+        createdAt = null;
+      }
+    }
+
     return OsuScore(
       artist: _asString(set['artist']) ?? '',
       title: _asString(set['title']) ?? '',
@@ -85,6 +95,7 @@ class OsuScoreDto {
       mapperId: mapperId,
 
       // ppIfFc / ppIfSs
+      createdAt: createdAt,
     );
   }
 }

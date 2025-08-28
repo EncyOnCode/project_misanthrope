@@ -1,5 +1,6 @@
 import 'dart:convert';
 import '../../core/http_client.dart';
+import '../../core/logger.dart';
 import '../../core/errors.dart';
 
 class OsuRemoteDs {
@@ -15,10 +16,12 @@ class OsuRemoteDs {
   }) async {
     final token = await tokenProvider();
     final uri = Uri.parse('$_base$path').replace(queryParameters: query);
+    Log.i('HTTP GET $uri');
     final (status, _, body) = await http.get(
       uri,
       headers: {'Authorization': 'Bearer $token', 'Accept': 'application/json'},
     );
+    Log.i('HTTP GET $status $uri');
     if (status != 200) throw NetworkException(status, body, uri);
     return jsonDecode(body) as Map<String, dynamic>;
   }
@@ -29,10 +32,12 @@ class OsuRemoteDs {
   }) async {
     final token = await tokenProvider();
     final uri = Uri.parse('$_base$path').replace(queryParameters: query);
+    Log.i('HTTP GET(list) $uri');
     final (status, _, body) = await http.get(
       uri,
       headers: {'Authorization': 'Bearer $token', 'Accept': 'application/json'},
     );
+    Log.i('HTTP GET(list) $status $uri');
     if (status != 200) throw NetworkException(status, body, uri);
     return jsonDecode(body) as List<dynamic>;
   }
@@ -44,6 +49,7 @@ class OsuRemoteDs {
   }) async {
     final token = await tokenProvider();
     final uri = Uri.parse('$_base$path').replace(queryParameters: query);
+    Log.i('HTTP POST $uri body=${jsonEncode(body)}');
     final (status, _, resp) = await http.post(
       uri,
       headers: {
@@ -53,6 +59,7 @@ class OsuRemoteDs {
       },
       body: jsonEncode(body),
     );
+    Log.i('HTTP POST $status $uri');
     if (status != 200) throw NetworkException(status, resp, uri);
     return (jsonDecode(resp) as Map).cast<String, Object?>();
   }

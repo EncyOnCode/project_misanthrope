@@ -1,4 +1,5 @@
-import 'package:teledart/model.dart' show TeleDartMessage;
+import 'package:teledart/model.dart'
+    show TeleDartMessage, InlineKeyboardMarkup, InlineKeyboardButton;
 import '../../../core/parsing.dart';
 import '../../../core/formatting.dart';
 import '../../../domain/entities/osu_mode.dart';
@@ -53,7 +54,7 @@ class LastCommand extends BotCommand {
       if ((mapMax == null || mapMax == 0) && s.beatmapId != null) {
         try {
           mapMax = await osu.beatmapMaxCombo(s.beatmapId!);
-        } on Object catch (_) {
+        } on Exception catch (_) {
           // ignore
         }
       }
@@ -67,7 +68,7 @@ class LastCommand extends BotCommand {
               (attrs.maxCombo != null && attrs.maxCombo! > 0)) {
             mapMax = attrs.maxCombo;
           }
-        } on Object catch (_) {}
+        } on Exception catch (_) {}
       }
 
       final text = formatLastPrettyFromEntity(
@@ -75,7 +76,16 @@ class LastCommand extends BotCommand {
         mapMaxComboOverride: mapMax,
         starOverride: starOverride,
       );
-      await m.reply(text, parseMode: 'MarkdownV2');
+      InlineKeyboardMarkup? kb;
+      if (s.beatmapId != null) {
+        final data = 'cmp:${s.beatmapId}:${mode.name}';
+        kb = InlineKeyboardMarkup(
+          inlineKeyboard: [
+            [InlineKeyboardButton(text: 'Compare', callbackData: data)],
+          ],
+        );
+      }
+      await m.reply(text, parseMode: 'MarkdownV2', replyMarkup: kb);
     } on Exception catch (e) {
       await m.reply('Ошибка: $e');
     }
