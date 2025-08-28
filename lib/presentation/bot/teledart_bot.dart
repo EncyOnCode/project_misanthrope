@@ -69,10 +69,10 @@ class TeledartBot {
                 .then((_) {
                   Log.i('Callback handled by ${h.runtimeType}');
                 })
-                .catchError((e) {
+                .catchError((Object e) {
                   Log.e(
                     'Callback handler error in ${h.runtimeType}',
-                    e as Object?,
+                    e,
                   );
                 });
             break;
