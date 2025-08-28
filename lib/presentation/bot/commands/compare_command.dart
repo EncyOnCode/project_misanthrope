@@ -1,4 +1,5 @@
-import 'package:teledart/model.dart' show TeleDartMessage;
+import 'package:teledart/model.dart'
+    show TeleDartMessage, TeleDartCallbackQuery, InlineKeyboardButton;
 import '../../../core/formatting.dart';
 import '../../../domain/entities/osu_mode.dart';
 import '../../../domain/usecases/fetch_map_scores.dart';
@@ -18,6 +19,9 @@ class CompareCommand extends BotCommand {
 
   @override
   List<String> get cyrAliases => ['с'];
+
+  @override
+  List<String> get callbackNames => ['compare'];
 
   @override
   Future<void> handle(TeleDartMessage m) async {
@@ -59,6 +63,49 @@ class CompareCommand extends BotCommand {
     } on Exception catch (e) {
       await m.reply('Ошибка: $e');
     }
+  }
+
+  @override
+  Future<void> handleCallback(TeleDartCallbackQuery q) async {
+    try {
+      final data = q.data ?? '';
+      final parts = data.split(':');
+      if (parts.length < 2) {
+        await q.answer();
+        return;
+      }
+      final beatmapId = int.tryParse(parts[1]);
+      if (beatmapId == null) {
+        await q.answer(text: 'Некорректный ID карты');
+        return;
+      }
+      final mode = parts.length > 2
+          ? OsuMode.parse(parts[2])
+          : OsuMode.osu;
+      final tgId = q.from?.id;
+      final bind = tgId == null ? null : await getBinding(tgId);
+      if (bind == null) {
+        await q.answer(text: 'Нет привязки');
+        return;
+      }
+      final scores = await fetchMapScores(bind.osuId, beatmapId, mode);
+      final lines = scores.isEmpty
+          ? 'Нет результатов.'
+          : scores.map((e) => '• ${formatScore(e)}').join('\n');
+      if (q.message != null) {
+        await q.message!.reply(lines);
+      }
+      await q.answer();
+    } on Exception catch (e) {
+      await q.answer(text: 'Ошибка: $e');
+    }
+  }
+
+  static InlineKeyboardButton button(int beatmapId, OsuMode mode) {
+    return InlineKeyboardButton(
+      text: 'Compare',
+      callback_data: 'compare:$beatmapId:${mode.name}',
+    );
   }
 }
 

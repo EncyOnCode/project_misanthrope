@@ -26,6 +26,12 @@ class TeledartBot {
             .where((m) => matchAlias(m.text, alias, _botName))
             .listen(cmd.handle);
       }
+      for (final cb in cmd.callbackNames) {
+        _bot
+            .onCallbackQuery()
+            .where((q) => (q.data ?? '').startsWith(cb))
+            .listen(cmd.handleCallback);
+      }
     }
 
     _bot.start();

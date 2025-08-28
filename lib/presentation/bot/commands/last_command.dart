@@ -1,4 +1,5 @@
-import 'package:teledart/model.dart' show TeleDartMessage;
+import 'package:teledart/model.dart'
+    show TeleDartMessage, InlineKeyboardMarkup;
 import '../../../core/parsing.dart';
 import '../../../core/formatting.dart';
 import '../../../domain/entities/osu_mode.dart';
@@ -6,6 +7,7 @@ import '../../../domain/usecases/fetch_recent_scores.dart';
 import '../../../domain/usecases/get_binding.dart';
 import '../../../domain/repositories/osu_repository.dart';
 import '../command_base.dart';
+import 'compare_command.dart';
 
 class LastCommand extends BotCommand {
   LastCommand(this.getRecent, this.getBinding, this.osu);
@@ -75,7 +77,13 @@ class LastCommand extends BotCommand {
         mapMaxComboOverride: mapMax,
         starOverride: starOverride,
       );
-      await m.reply(text, parseMode: 'MarkdownV2');
+      InlineKeyboardMarkup? markup;
+      if (s.beatmapId != null) {
+        markup = InlineKeyboardMarkup(inlineKeyboard: [
+          [CompareCommand.button(s.beatmapId!, mode)]
+        ]);
+      }
+      await m.reply(text, parseMode: 'MarkdownV2', replyMarkup: markup);
     } on Exception catch (e) {
       await m.reply('Ошибка: $e');
     }
