@@ -171,3 +171,51 @@ String formatLastPrettyFromEntity(
 
   return buf.toString();
 }
+
+String formatCompareTable(List<OsuScore> scores, {int limitRows = 20}) {
+  if (scores.isEmpty) return '';
+  final first = scores.first;
+  final title = '${first.artist} — ${first.title} [${first.diff}]';
+
+  String fmtAcc(double v) => '${v.toStringAsFixed(2)}%';
+  String fmtPp(double? v) => v == null ? '-' : v.toStringAsFixed(2);
+  String fmtMods(List<String> mods) =>
+      mods.isEmpty ? 'NM' : mods.map((e) => e.toUpperCase()).join();
+
+  final sorted = List.of(scores)..sort((a, b) {
+    final app = a.pp ?? -1;
+    final bpp = b.pp ?? -1;
+    final c = bpp.compareTo(app);
+    return c != 0 ? c : b.accuracy.compareTo(a.accuracy);
+  });
+
+  const gW = 3;
+  const accW = 8;
+  const ppW = 8;
+  const dateW = 8; // dd.MM.yy
+  String pad(String s, int w) => s.padRight(w);
+  String fmtDate(DateTime? d) {
+    if (d == null) return '--.--.--';
+    final dd = d.day.toString().padLeft(2, '0');
+    final mm = d.month.toString().padLeft(2, '0');
+    final yy = (d.year % 100).toString().padLeft(2, '0');
+    return '$dd.$mm.$yy';
+  }
+
+  final header =
+      '${pad('G', gW)}  ${pad('Acc', accW)}  ${pad('PP', ppW)}  Mods  ${pad('Date', dateW)}';
+  final limited = sorted.take(limitRows).toList();
+  final rows = limited
+      .map((s) {
+        final g = (s.rank).toUpperCase();
+        final acc = fmtAcc(s.accuracy);
+        final pp = fmtPp(s.pp);
+        final mods = fmtMods(s.mods);
+        final date = fmtDate(s.createdAt);
+        return '${pad(g, gW)}  ${pad(acc, accW)}  ${pad(pp, ppW)}  ${pad(mods, 4)}  ${pad(date, dateW)}';
+      })
+      .join('\n');
+  final omitted = sorted.length - limited.length;
+  final table = '$header\n$rows${omitted > 0 ? '\n... and $omitted more' : ''}';
+  return '${escapeMdV2(title)}\n\n```\n$table\n```';
+}

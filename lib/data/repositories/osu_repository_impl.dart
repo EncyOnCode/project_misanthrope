@@ -97,4 +97,49 @@ class OsuRepositoryImpl implements IOsuRepository {
     final mc = (attrs['max_combo'] as num?)?.toInt();
     return (starRating: sr, maxCombo: mc);
   }
+
+  @override
+  Future<List<OsuScore>> userScoresOnBeatmap(
+    int userId,
+    int beatmapId,
+    OsuMode mode,
+  ) async {
+    // GET /beatmaps/{beatmap_id}/scores/users/{user_id}/all?mode={mode}
+    // Response is a map with key 'scores' containing a list of score objects.
+    final data = await remote.get(
+      '/beatmaps/$beatmapId/scores/users/$userId/all',
+      query: {'mode': mode.api},
+    );
+    // Fetch beatmap details once to enrich each score with artist/title/diff if missing
+    Map<String, Object?> beatmapDetails = const {};
+    Map<String, Object?> beatmapsetDetails = const {};
+    try {
+      final bm = await remote.get('/beatmaps/$beatmapId');
+      beatmapDetails = bm.cast<String, Object?>();
+      final set = (bm['beatmapset'] as Map?)?.cast<String, Object?>();
+      if (set != null) beatmapsetDetails = set;
+    } on Object {
+      // ignore enrichment failures
+    }
+
+    final list = (data['scores'] as List?) ?? const [];
+    return list
+        .map((e) {
+          final item =
+              (e is Map) ? e.cast<String, Object?>() : <String, Object?>{};
+          final inner = item['score'];
+          final baseScore =
+              inner is Map
+                  ? inner.cast<String, Object?>()
+                  : item; // endpoint may already return score object directly
+
+          // Enrich with beatmap/beatmapset when absent so we can format artist/title/diff
+          final merged = Map<String, Object?>.from(baseScore)
+          ..putIfAbsent('beatmap', () => beatmapDetails)
+          ..putIfAbsent('beatmapset', () => beatmapsetDetails);
+
+          return OsuScoreDto(merged).toEntity();
+        })
+        .toList(growable: false);
+  }
 }

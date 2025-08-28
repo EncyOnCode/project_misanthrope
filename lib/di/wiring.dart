@@ -19,6 +19,7 @@ import '../domain/usecases/get_binding.dart';
 import '../domain/usecases/fetch_profile.dart';
 import '../domain/usecases/fetch_top_scores.dart';
 import '../domain/usecases/fetch_recent_scores.dart';
+import '../domain/usecases/fetch_user_map_scores.dart';
 
 class AppDeps {
   AppDeps({
@@ -34,6 +35,7 @@ class AppDeps {
     required this.fetchProfile,
     required this.fetchTopScores,
     required this.fetchRecentScores,
+    required this.fetchUserMapScores,
   });
 
   final IHttpClient http;
@@ -48,6 +50,7 @@ class AppDeps {
   final FetchProfile fetchProfile;
   final FetchTopScores fetchTopScores;
   final FetchRecentScores fetchRecentScores;
+  final FetchUserMapScores fetchUserMapScores;
 }
 
 Future<AppDeps> buildDeps(Env env, AppDatabase db) async {
@@ -79,5 +82,6 @@ Future<AppDeps> buildDeps(Env env, AppDatabase db) async {
     fetchProfile: FetchProfile(osuRepo),
     fetchTopScores: FetchTopScores(osuRepo),
     fetchRecentScores: FetchRecentScores(osuRepo),
+    fetchUserMapScores: FetchUserMapScores(osuRepo),
   );
 }
