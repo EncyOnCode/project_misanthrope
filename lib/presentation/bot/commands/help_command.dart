@@ -17,6 +17,7 @@ class HelpCommand extends BotCommand {
       '• /top5 (/t5, /т5) [user] [mode]\n'
       '• /last (/l, /л) [user] [mode]\n'
       '• /last_fails (/lf, /лф) [user] [mode]\n'
+      '• /compare (/c, /с) [user] [mode] [beatmapId]\n'
       '\nЕсли ты привязан через /reg, <user> можно не указывать.\n'
       'mode: osu|taiko|fruits|mania (по умолчанию osu)\n'
       'Ник может быть с пробелами: /top5 Some User Name mania';

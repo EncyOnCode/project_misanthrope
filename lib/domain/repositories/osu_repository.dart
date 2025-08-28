@@ -18,6 +18,12 @@ abstract class IOsuRepository {
     bool includeFails = false,
   });
 
+  Future<List<OsuScore>> userBeatmapScores(
+    int userId,
+    int beatmapId,
+    OsuMode mode,
+  );
+
   /// Дотянуть max_combo карты, если он отсутствует во вложении beatmap у recent.
   Future<int?> beatmapMaxCombo(int beatmapId);
 
