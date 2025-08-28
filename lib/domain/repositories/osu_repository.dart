@@ -26,4 +26,11 @@ abstract class IOsuRepository {
     OsuMode mode,
     List<String> mods,
   );
+
+  /// All scores by the user on a specific beatmap (compare).
+  Future<List<OsuScore>> userScoresOnBeatmap(
+    int userId,
+    int beatmapId,
+    OsuMode mode,
+  );
 }

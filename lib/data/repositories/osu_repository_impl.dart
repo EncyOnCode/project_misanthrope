@@ -97,4 +97,22 @@ class OsuRepositoryImpl implements IOsuRepository {
     final mc = (attrs['max_combo'] as num?)?.toInt();
     return (starRating: sr, maxCombo: mc);
   }
+
+  @override
+  Future<List<OsuScore>> userScoresOnBeatmap(
+    int userId,
+    int beatmapId,
+    OsuMode mode,
+  ) async {
+    // GET /beatmaps/{beatmap_id}/scores/users/{user_id}/all?mode={mode}
+    // Response is a map with key 'scores' containing a list of score objects.
+    final data = await remote.get(
+      '/beatmaps/$beatmapId/scores/users/$userId/all',
+      query: {'mode': mode.api},
+    );
+    final list = (data['scores'] as List?) ?? const [];
+    return list
+        .map((e) => OsuScoreDto((e as Map).cast<String, Object?>()).toEntity())
+        .toList(growable: false);
+  }
 }

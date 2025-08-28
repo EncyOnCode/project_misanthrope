@@ -8,6 +8,7 @@ import 'package:enclosedbot/presentation/bot/commands/last_finished_command.dart
 import 'package:enclosedbot/presentation/bot/commands/profile_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/register_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/top5_command.dart';
+import 'package:enclosedbot/presentation/bot/commands/compare_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/unregister_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/whoami_command.dart';
 
@@ -29,6 +30,7 @@ Future<void> main(List<String> args) async {
     Top5Command(deps.fetchTopScores, deps.getBinding, deps.osuRepo),
     LastCommand(deps.fetchRecentScores, deps.getBinding, deps.osuRepo),
     LastFinishedCommand(deps.fetchRecentScores, deps.getBinding, deps.osuRepo),
+    CompareCommand(deps.getBinding, deps.fetchUserMapScores),
   ]);
 
   await bot.start();
