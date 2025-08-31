@@ -12,6 +12,7 @@ import 'package:enclosedbot/presentation/bot/commands/compare_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/compare_callback.dart';
 import 'package:enclosedbot/presentation/bot/commands/unregister_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/whoami_command.dart';
+import 'package:enclosedbot/presentation/bot/commands/pp_command.dart';
 
 import 'package:enclosedbot/core/env.dart';
 import 'package:enclosedbot/core/logger.dart';
@@ -26,19 +27,26 @@ Future<void> main(List<String> args) async {
   final deps = await buildDeps(env, db);
   Log.i('Dependencies built.');
 
-  final bot = TeledartBot(env.botToken, [
-    HelpCommand(),
-    RegisterCommand(deps.registerBinding),
-    UnregisterCommand(deps.unregisterBinding),
-    WhoAmICommand(deps.getBinding),
-    ProfileCommand(deps.fetchProfile, deps.getBinding),
-    Top5Command(deps.fetchTopScores, deps.getBinding, deps.osuRepo),
-    LastCommand(deps.fetchRecentScores, deps.getBinding, deps.osuRepo),
-    LastFinishedCommand(deps.fetchRecentScores, deps.getBinding, deps.osuRepo),
-    CompareCommand(deps.getBinding, deps.fetchUserMapScores, deps.osuRepo),
-  ], callbacks: [
-    CompareCallback(deps.getBinding, deps.fetchUserMapScores),
-  ]);
+  final bot = TeledartBot(
+    env.botToken,
+    [
+      HelpCommand(),
+      RegisterCommand(deps.registerBinding),
+      UnregisterCommand(deps.unregisterBinding),
+      WhoAmICommand(deps.getBinding),
+      ProfileCommand(deps.fetchProfile, deps.getBinding),
+      Top5Command(deps.fetchTopScores, deps.getBinding, deps.osuRepo),
+      LastCommand(deps.fetchRecentScores, deps.getBinding, deps.osuRepo),
+      LastFinishedCommand(
+        deps.fetchRecentScores,
+        deps.getBinding,
+        deps.osuRepo,
+      ),
+      CompareCommand(deps.getBinding, deps.fetchUserMapScores, deps.osuRepo),
+      PpCommand(),
+    ],
+    callbacks: [CompareCallback(deps.getBinding, deps.fetchUserMapScores)],
+  );
 
   Log.i('Starting TeleDart...');
   await bot.start();

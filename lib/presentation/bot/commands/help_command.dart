@@ -25,6 +25,7 @@ class HelpCommand extends BotCommand {
   @override
   Future<void> handle(TeleDartMessage m) async {
     await m.reply(_help);
+    // Extra: document /pp command succinctly
+    await m.reply('- /pp <link> [mods] [accuracy] — расчёт PP.\nПримеры: /pp https://osu.ppy.sh/beatmapsets/773995#osu/1622719 HDDT 98.5; /pp https://osu.ppy.sh/beatmaps/1622719 HR 99%');
   }
 }
-
