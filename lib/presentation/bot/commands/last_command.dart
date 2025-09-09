@@ -1,3 +1,4 @@
+import 'package:l/l.dart';
 import 'package:teledart/model.dart'
     show TeleDartMessage, InlineKeyboardMarkup, InlineKeyboardButton;
 import '../../../core/parsing.dart';
@@ -52,11 +53,15 @@ class LastCommand extends BotCommand {
       }
       final s = scores.first;
 
-      int? mapMax = (s.mapMaxCombo == null || s.mapMaxCombo == 0) ? null : s.mapMaxCombo;
+      int? mapMax =
+          (s.mapMaxCombo == null || s.mapMaxCombo == 0) ? null : s.mapMaxCombo;
       if ((mapMax == null || mapMax == 0) && s.beatmapId != null) {
         try {
           mapMax = await osu.beatmapMaxCombo(s.beatmapId!);
-        } catch (_) {}
+        } on Exception catch (e) {
+          l.e('Error occured in last command: $e');
+          rethrow;
+        }
       }
 
       double? starOverride;
@@ -64,10 +69,14 @@ class LastCommand extends BotCommand {
         try {
           final attrs = await osu.beatmapAttributes(s.beatmapId!, mode, s.mods);
           starOverride = attrs.starRating;
-          if ((mapMax == null || mapMax == 0) && (attrs.maxCombo != null && attrs.maxCombo! > 0)) {
+          if ((mapMax == null || mapMax == 0) &&
+              (attrs.maxCombo != null && attrs.maxCombo! > 0)) {
             mapMax = attrs.maxCombo;
           }
-        } catch (_) {}
+        } on Exception catch (e) {
+          l.e('Error occured in last command: $e');
+          rethrow;
+        }
       }
 
       // Local PP calculation (fallback only) + If FC
@@ -144,7 +153,7 @@ class LastCommand extends BotCommand {
       );
       if (ifFcPp != null) {
         // last uses MarkdownV2; escape the added line
-        text +=   '\n${escapeMdV2('If FC: ${ifFcPp.toStringAsFixed(2)}')}';
+        text += '\n${escapeMdV2('If FC: ${ifFcPp.toStringAsFixed(2)}')}';
       }
 
       InlineKeyboardMarkup? kb;

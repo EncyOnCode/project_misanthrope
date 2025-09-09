@@ -70,8 +70,8 @@ class CompareCommand extends BotCommand {
           : '@${m.from!.username}';
       final headParts = <String>[];
       if (mention != null) headParts.add(escapeMdV2(mention));
-      headParts.add('Сравнение для ' + linkMdV2(osuNameForPing, profileUrl));
-      final head = headParts.join('\n') + '\n\n';
+      headParts.add('Сравнение для ${linkMdV2(osuNameForPing, profileUrl)}');
+      final head = '${headParts.join('\n')}\n\n';
       await m.reply(head + table, parseMode: 'MarkdownV2');
     } on Exception catch (e) {
       await m.reply('Ошибка: $e');
