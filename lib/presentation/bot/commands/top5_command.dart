@@ -1,6 +1,5 @@
 import 'package:teledart/model.dart' show TeleDartMessage;
 import '../../../core/parsing.dart';
-import '../../../core/formatting.dart';
 import '../../../domain/entities/osu_mode.dart';
 import '../../../domain/usecases/fetch_top_scores.dart';
 import '../../../domain/usecases/get_binding.dart';
@@ -31,7 +30,7 @@ class Top5Command extends BotCommand {
         final bind = tgId == null ? null : await getBinding(tgId);
         if (bind == null) {
           await m.reply(
-            'Укажи игрока: /top5 <user> [mode]\nили сначала привяжись: /reg <user>',
+            'Подсказка: /top5 <user> [mode]\nИли сначала привяжи аккаунт: /reg <user>',
           );
           return;
         }
@@ -41,13 +40,21 @@ class Top5Command extends BotCommand {
       }
       final scores = await getTop(uid, mode, limit: 5);
       if (scores.isEmpty) {
-        await m.reply('Скоров не найдено.');
+        await m.reply('Результаты не найдены.');
         return;
       }
-      final lines = scores.take(5).map((e) => '• ${formatScore(e)}').join('\n');
+      final lines = scores
+          .take(5)
+          .map((s) {
+            final modsStr = s.mods.isEmpty ? '' : ' +${s.mods.join()}';
+            final ppStr = s.pp == null ? '-' : s.pp!.toStringAsFixed(2);
+            return '• ${s.artist} - ${s.title} [${s.diff}]  |  ${s.rank}  |  ${s.accuracy.toStringAsFixed(2)}% acc  |  ${ppStr}pp$modsStr';
+          })
+          .join('\n');
       await m.reply(lines);
     } on Exception catch (e) {
       await m.reply('Ошибка: $e');
     }
   }
 }
+
