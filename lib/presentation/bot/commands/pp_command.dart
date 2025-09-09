@@ -89,7 +89,7 @@ class PpCommand extends BotCommand {
     String modsSpec = '';
     double? acc;
 
-    final numRe = RegExp(r'^(\d+(?:[\.,]\d+)?)%?$');
+    final numRe = RegExp(r'^(\d+(?:[.,]\d+)?)%?$');
     for (final t in args) {
       if (t.contains('osu.ppy.sh')) {
         continue; // link is handled via extractBeatmapId
