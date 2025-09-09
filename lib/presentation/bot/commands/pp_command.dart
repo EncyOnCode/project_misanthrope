@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import '../../../core/logger.dart';
 import '../../../core/parsing.dart';
 import 'package:http/http.dart' as http;
@@ -8,8 +6,10 @@ import 'package:teledart/model.dart' show TeleDartMessage;
 
 import '../command_base.dart';
 import '../bot_api.dart';
+import '../../../core/pp_calc.dart' as pp;
 
 class PpCommand extends BotCommand {
+
   @override
   List<String> get names => ['pp'];
 
@@ -32,31 +32,33 @@ class PpCommand extends BotCommand {
       final (mods, acc) = _parseModsAndAcc(text);
 
       // Ensure native lib is discoverable by rosu_pp_dart.
-      await _ensureNativeLibraryAvailable();
+      await pp.ensureNativeLibraryAvailable();
 
       // Download the .osu file directly from osu! website (no auth required).
       final uri = Uri.parse('https://osu.ppy.sh/osu/$beatmapId');
       Log.i('Downloading .osu for beatmapId=$beatmapId -> $uri');
       final resp = await http.get(uri);
       if (resp.statusCode != 200 || resp.bodyBytes.isEmpty) {
-        await m.reply('Не удалось скачать .osu файл (HTTP ${resp.statusCode}).');
+        await m.reply(
+          'Не удалось скачать .osu файл (HTTP ${resp.statusCode}).',
+        );
         return;
       }
 
       final source = MapSource$Bytes(resp.bodyBytes);
-      final settings = BeatmapSettings(
-        mods: mods,
-        acc: acc,
-      );
+      final settings = BeatmapSettings(mods: mods, acc: acc);
 
-      // Compute PP.
+      // Compute PP using provided mods and accuracy only (approximate by design).
       final result = RosuPP.calculate(settings, map: source);
 
       final ppStr = _fmt(result.pp);
       final starsStr = result.stars != null ? _fmt(result.stars!) : null;
       final maxPpStr = result.maxPp != null ? _fmt(result.maxPp!) : null;
 
-      final modsStr = mods.isEmpty ? 'NoMod' : mods.map((e) => e.name.toUpperCase()).join('');
+      final modsStr =
+          mods.isEmpty
+              ? 'NoMod'
+              : mods.map((e) => e.name.toUpperCase()).join('');
       final accStr = acc != null ? '${_fmt(acc)}%' : '—';
 
       final lines = <String>[
@@ -80,14 +82,18 @@ class PpCommand extends BotCommand {
   (List<OsuMod>, double?) _parseModsAndAcc(String text) {
     final tokens = text.trim().split(RegExp(r'\s+'));
     // Drop the command token
-    final args = tokens.where((t) => !t.startsWith('/pp')).toList(growable: false);
+    final args = tokens
+        .where((t) => !t.startsWith('/pp'))
+        .toList(growable: false);
 
     String modsSpec = '';
     double? acc;
 
     final numRe = RegExp(r'^(\d+(?:[\.,]\d+)?)%?$');
     for (final t in args) {
-      if (t.contains('osu.ppy.sh')) continue; // link is handled via extractBeatmapId
+      if (t.contains('osu.ppy.sh')) {
+        continue; // link is handled via extractBeatmapId
+      }
       final m = numRe.firstMatch(t);
       if (m != null) {
         final raw = m.group(1)!.replaceAll(',', '.');
@@ -96,7 +102,8 @@ class PpCommand extends BotCommand {
         continue;
       }
       // Potential mods token (letters/numbers like K4, SV2, COOP, HDDT etc.)
-      if (RegExp(r'^[a-zA-Z0-9+]+$').hasMatch(t) && !RegExp(r'^\d+$').hasMatch(t)) {
+      if (RegExp(r'^[a-zA-Z0-9+]+$').hasMatch(t) &&
+          !RegExp(r'^\d+$').hasMatch(t)) {
         modsSpec += t;
       }
     }
@@ -107,7 +114,11 @@ class PpCommand extends BotCommand {
 
   List<OsuMod> _parseMods(String raw) {
     if (raw.isEmpty) return const [];
-    var s = raw.toUpperCase().replaceAll('+', '').replaceAll('|', '').replaceAll(',', '');
+    var s = raw
+        .toUpperCase()
+        .replaceAll('+', '')
+        .replaceAll('|', '')
+        .replaceAll(',', '');
     final result = <OsuMod>[];
 
     OsuMod? tryTake(String code) => _modsMap[code];
@@ -206,30 +217,9 @@ class PpCommand extends BotCommand {
     'CL': OsuMod.cl,
   };
 
-  Future<void> _ensureNativeLibraryAvailable() async {
-    // rosu_pp_dart looks for native.dll (Windows) in current directory by default.
-    // If not present, but bundled under ./bin/native.dll, copy it to CWD.
-    final libName = Platform.isWindows
-        ? 'native.dll'
-        : Platform.isMacOS
-            ? 'libnative.dylib'
-            : 'libnative.so';
-
-    final inCwd = File(libName);
-    if (inCwd.existsSync()) return;
-
-    final fromBin = File('bin/$libName');
-    if (fromBin.existsSync()) {
-      try {
-        await fromBin.copy(libName);
-        Log.i('Copied $libName from bin/ to CWD for rosu-pp');
-      } on Object catch (e) {
-        Log.w('Failed to copy $libName from bin/: $e');
-      }
-    }
-  }
-
   String _fmt(num v) => v.toStringAsFixed(2);
+
+  // No user-score enrichment: /pp remains approximate by design.
 
   Future<void> _reply(
     TeleDartMessage m,

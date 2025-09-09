@@ -8,7 +8,7 @@ class RegisterCommand extends BotCommand {
   final RegisterBinding register;
 
   @override
-  List<String> get names => ['reg', 'r'];
+  List<String> get names => ['reg'];
 
   @override
   List<String> get cyrAliases => ['рег'];

@@ -13,6 +13,7 @@ import 'package:enclosedbot/presentation/bot/commands/compare_callback.dart';
 import 'package:enclosedbot/presentation/bot/commands/unregister_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/whoami_command.dart';
 import 'package:enclosedbot/presentation/bot/commands/pp_command.dart';
+import 'package:enclosedbot/presentation/bot/commands/roll_command.dart';
 
 import 'package:enclosedbot/core/env.dart';
 import 'package:enclosedbot/core/logger.dart';
@@ -44,6 +45,7 @@ Future<void> main(List<String> args) async {
       ),
       CompareCommand(deps.getBinding, deps.fetchUserMapScores, deps.osuRepo),
       PpCommand(),
+      RollCommand(),
     ],
     callbacks: [CompareCallback(deps.getBinding, deps.fetchUserMapScores)],
   );
