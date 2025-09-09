@@ -1,0 +1,8 @@
+.git
+.dart_tool
+.idea
+build
+**/.DS_Store
+**/*.log
+data/bot.db
+assets/generated/
