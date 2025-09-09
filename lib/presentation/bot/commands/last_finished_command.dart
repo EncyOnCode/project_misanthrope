@@ -1,4 +1,5 @@
 import 'package:teledart/model.dart' show TeleDartMessage;
+import '../../../core/error_messages.dart';
 import '../../../core/parsing.dart';
 import '../../../domain/entities/osu_mode.dart';
 import '../../../domain/usecases/fetch_recent_scores.dart';
@@ -72,7 +73,7 @@ class LastFinishedCommand extends BotCommand {
           '${s.artist} - ${s.title} [${s.diff}]  |  ${s.rank}  |  ${s.accuracy.toStringAsFixed(2)}% acc  |  ${ppStr}pp$modsStr';
       await m.reply(line);
     } on Exception catch (e) {
-      await m.reply('Ошибка: $e');
+      await m.reply(toUserMessage(e));
     }
   }
 }

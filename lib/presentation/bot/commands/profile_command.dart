@@ -1,4 +1,5 @@
 import 'package:teledart/model.dart' show TeleDartMessage;
+import '../../../core/error_messages.dart';
 import '../../../core/parsing.dart';
 import '../../../core/formatting.dart';
 import '../../../domain/entities/osu_mode.dart';
@@ -47,7 +48,7 @@ class ProfileCommand extends BotCommand {
         await m.reply(caption);
       }
     } on Exception catch (e) {
-      await m.reply('Ошибка: $e');
+      await m.reply(toUserMessage(e));
     }
   }
 }
