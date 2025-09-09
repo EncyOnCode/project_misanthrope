@@ -1,0 +1,15 @@
+.git
+.dart_tool
+.idea
+build
+**/.DS_Store
+**/*.log
+data/bot.db
+assets/generated/
+.gitignore
+.vscode
+build/
+.dart_tool/
+test/
+*.log
+.env
