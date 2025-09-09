@@ -8,6 +8,7 @@ import '../../../domain/usecases/fetch_user_map_scores.dart';
 import '../../../domain/repositories/osu_repository.dart';
 import '../../../core/logger.dart';
 import '../../../core/markdown.dart';
+import '../../../core/error_messages.dart';
 import '../command_base.dart';
 
 class CompareCommand extends BotCommand {
@@ -74,7 +75,7 @@ class CompareCommand extends BotCommand {
       final head = '${headParts.join('\n')}\n\n';
       await m.reply(head + table, parseMode: 'MarkdownV2');
     } on Exception catch (e) {
-      await m.reply('Ошибка: $e');
+      await m.reply(toUserMessage(e));
     }
   }
 }

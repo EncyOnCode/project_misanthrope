@@ -6,6 +6,7 @@ import '../../../core/markdown.dart';
 import '../../../domain/entities/osu_mode.dart';
 import '../../../domain/usecases/fetch_user_map_scores.dart';
 import '../../../domain/usecases/get_binding.dart';
+import '../../../core/error_messages.dart';
 import '../command_base.dart';
 
 class CompareCallback extends BotCallback {
@@ -73,7 +74,7 @@ class CompareCallback extends BotCallback {
       await q.answer();
     } on Exception catch (e) {
       try {
-        await q.teledartMessage?.reply('Ошибка: $e');
+        await q.teledartMessage?.reply(toUserMessage(e));
         await q.answer();
       } on Exception catch (_) {}
     }

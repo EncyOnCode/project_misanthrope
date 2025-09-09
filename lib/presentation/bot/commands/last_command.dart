@@ -4,6 +4,7 @@ import 'package:teledart/model.dart'
 import '../../../core/parsing.dart';
 import '../../../core/formatting.dart';
 import '../../../core/markdown.dart';
+import '../../../core/error_messages.dart';
 import '../../../domain/entities/osu_mode.dart';
 import '../../../domain/entities/osu_score.dart';
 import '../../../domain/usecases/fetch_recent_scores.dart';
@@ -59,8 +60,8 @@ class LastCommand extends BotCommand {
         try {
           mapMax = await osu.beatmapMaxCombo(s.beatmapId!);
         } on Exception catch (e) {
-          l.e('Error occured in last command: $e');
-          rethrow;
+          // Non-critical enrichment failure: log and continue without max combo.
+          l.e('Error occured in last command during beatmapMaxCombo: $e');
         }
       }
 
@@ -74,8 +75,8 @@ class LastCommand extends BotCommand {
             mapMax = attrs.maxCombo;
           }
         } on Exception catch (e) {
-          l.e('Error occured in last command: $e');
-          rethrow;
+          // Non-critical enrichment failure: log and continue without attributes.
+          l.e('Error occured in last command during beatmapAttributes: $e');
         }
       }
 
@@ -167,7 +168,7 @@ class LastCommand extends BotCommand {
       }
       await m.reply(text, parseMode: 'MarkdownV2', replyMarkup: kb);
     } on Exception catch (e) {
-      await m.reply('Ошибка: $e');
+      await m.reply(toUserMessage(e));
     }
   }
 }

@@ -9,12 +9,11 @@ import '../bot_api.dart';
 import '../../../core/pp_calc.dart' as pp;
 
 class PpCommand extends BotCommand {
-
   @override
   List<String> get names => ['pp'];
 
   @override
-  List<String> get cyrAliases => ['пп'];
+  List<String> get cyrAliases => ['����'];
 
   @override
   Future<void> handle(TeleDartMessage m) async {
@@ -24,7 +23,7 @@ class PpCommand extends BotCommand {
       if (beatmapId == null) {
         await _reply(
           m,
-          'Укажи ссылку на конкретную сложность (beatmap).\nПример: /pp https://osu.ppy.sh/beatmapsets/773995#osu/1622719 HDDT 98.5',
+          'Не удалось распознать ссылку на карту (beatmap).\nПример: /pp https://osu.ppy.sh/beatmapsets/773995#osu/1622719 HDDT 98.5',
         );
         return;
       }
@@ -56,24 +55,22 @@ class PpCommand extends BotCommand {
       final maxPpStr = result.maxPp != null ? _fmt(result.maxPp!) : null;
 
       final modsStr =
-          mods.isEmpty
-              ? 'NoMod'
-              : mods.map((e) => e.name.toUpperCase()).join('');
-      final accStr = acc != null ? '${_fmt(acc)}%' : '—';
+          mods.isEmpty ? 'NoMod' : mods.map((e) => e.name.toUpperCase()).join('');
+      final accStr = acc != null ? '${_fmt(acc)}%' : '–';
 
       final lines = <String>[
         'PP: $ppStr',
-        'Моды: $modsStr | Аккуратность: $accStr',
+        'Моды: $modsStr | Точность: $accStr',
         if (starsStr != null) '★: $starsStr',
         if (maxPpStr != null) 'Max PP: $maxPpStr',
       ];
       await _reply(m, lines.join('\n'));
     } on RosuPPException catch (e) {
       Log.e('rosu_pp error', e);
-      await _reply(m, 'Ошибка расчёта PP: ${e.message}');
+      await _reply(m, 'Не удалось вычислить PP: ${e.message}');
     } on Object catch (e) {
       Log.e('Unhandled /pp error', e as Object?);
-      await _reply(m, 'Не удалось посчитать PP: $e');
+      await _reply(m, 'Произошла ошибка при расчёте PP. Попробуйте позже.');
     }
   }
 
@@ -82,9 +79,7 @@ class PpCommand extends BotCommand {
   (List<OsuMod>, double?) _parseModsAndAcc(String text) {
     final tokens = text.trim().split(RegExp(r'\s+'));
     // Drop the command token
-    final args = tokens
-        .where((t) => !t.startsWith('/pp'))
-        .toList(growable: false);
+    final args = tokens.where((t) => !t.startsWith('/pp')).toList(growable: false);
 
     String modsSpec = '';
     double? acc;
@@ -102,8 +97,7 @@ class PpCommand extends BotCommand {
         continue;
       }
       // Potential mods token (letters/numbers like K4, SV2, COOP, HDDT etc.)
-      if (RegExp(r'^[a-zA-Z0-9+]+$').hasMatch(t) &&
-          !RegExp(r'^\d+$').hasMatch(t)) {
+      if (RegExp(r'^[a-zA-Z0-9+]+$').hasMatch(t) && !RegExp(r'^\d+$').hasMatch(t)) {
         modsSpec += t;
       }
     }
@@ -114,11 +108,7 @@ class PpCommand extends BotCommand {
 
   List<OsuMod> _parseMods(String raw) {
     if (raw.isEmpty) return const [];
-    var s = raw
-        .toUpperCase()
-        .replaceAll('+', '')
-        .replaceAll('|', '')
-        .replaceAll(',', '');
+    var s = raw.toUpperCase().replaceAll('+', '').replaceAll('|', '').replaceAll(',', '');
     final result = <OsuMod>[];
 
     OsuMod? tryTake(String code) => _modsMap[code];
@@ -235,3 +225,4 @@ class PpCommand extends BotCommand {
     );
   }
 }
+

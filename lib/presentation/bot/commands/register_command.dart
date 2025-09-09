@@ -1,4 +1,5 @@
 import 'package:teledart/model.dart' show TeleDartMessage;
+import '../../../core/error_messages.dart';
 import '../../../domain/usecases/register_binding.dart';
 import '../command_base.dart';
 
@@ -32,7 +33,7 @@ class RegisterCommand extends BotCommand {
         'Готово! Привязал к osu! пользователю "${b.username}" (id=${b.osuId}).',
       );
     } on Exception catch (e) {
-      await m.reply('Ошибка: $e');
+      await m.reply(toUserMessage(e));
     }
   }
 }
